@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: kyre_onion_nginx
+    networks:
+      - onion_net
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/kyre.conf:ro
+    restart: unless-stopped
+
+  tor:
+    build:
+      context: ./tor
+      dockerfile: Dockerfile
+    container_name: kyre_onion_tor
+    networks:
+      - onion_net
+    volumes:
+      - ./data:/var/lib/tor
+      - ./tor/torrc:/etc/tor/torrc:ro
+    restart: unless-stopped
+
+networks:
+  onion_net:
+    driver: bridge
